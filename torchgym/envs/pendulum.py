@@ -3,14 +3,13 @@ __credits__ = ["Carlos Luis"]
 from os import path
 from typing import Optional
 
+import gymnasium as gym
+from gymnasium.envs.classic_control import utils
+from gymnasium.error import DependencyNotInstalled
 import numpy as np
 import torch
 
-import gymnasium as gym
-from gymnasium import spaces
-from gymnasium.envs.classic_control import utils
-from gymnasium.error import DependencyNotInstalled
-
+from torchgym import spaces
 
 DEFAULT_X = torch.pi
 DEFAULT_Y = 1.0
@@ -36,7 +35,7 @@ class PendulumEnv(gym.Env):
 
     ## Action Space
 
-    The action is a `ndarray` with shape `(1,)` representing the torque applied to free end of the pendulum.
+    The action is a `torch.tensor` with shape `(1,)` representing the torque applied to free end of the pendulum.
 
     | Num | Action | Min  | Max |
     |-----|--------|------|-----|
@@ -44,7 +43,7 @@ class PendulumEnv(gym.Env):
 
     ## Observation Space
 
-    The observation is a `ndarray` with shape `(3,)` representing the x-y coordinates of the pendulum's free
+    The observation is a `torch.tensor` with shape `(3,)` representing the x-y coordinates of the pendulum's free
     end and its angular velocity.
 
     | Num | Observation      | Min  | Max |
@@ -87,7 +86,7 @@ class PendulumEnv(gym.Env):
     >>> env
     <TimeLimit<OrderEnforcing<PassiveEnvChecker<PendulumEnv<Pendulum-v1>>>>>
     >>> env.reset(seed=123, options={"low": -0.7, "high": 0.5})  # default low=-0.6, high=-0.5
-    (array([ 0.4123625 ,  0.91101986, -0.89235795], dtype=float32), {})
+    (tensor([ 0.4123625 ,  0.91101986, -0.89235795], dtype=float32), {})
 
     ```
 
@@ -144,7 +143,6 @@ class PendulumEnv(gym.Env):
         newthdot = thdot + (3 * g / (2 * l) * torch.sin(th) + 3.0 / (m * l**2) * u) * dt
         newthdot = torch.clip(newthdot, -self.max_speed, self.max_speed)
         newth = th + newthdot * dt
-        # self.state = torch.tensor([newth, newthdot], requires_grad=True) + self.state
         self.state = torch.stack([newth, newthdot])
 
         if self.render_mode == "human":
@@ -165,7 +163,11 @@ class PendulumEnv(gym.Env):
             y = utils.verify_number_and_cast(y)
             high = torch.tensor([x, y])
         low = -high  # We enforce symmetric limits.
-        self.state = torch.tensor(self.np_random.uniform(low=low, high=high))
+        self.state = torch.tensor(
+            self.np_random.uniform(low=low, high=high),
+            dtype=torch.float32,
+            device=self.device,
+        )
         self.last_u = None
 
         if self.render_mode == "human":

@@ -1,4 +1,5 @@
-from gymnasium.envs.registration import make, pprint_registry, register, registry, spec
+"""Register environments for gym."""
+from gymnasium.envs.registration import register
 
 
 register(
