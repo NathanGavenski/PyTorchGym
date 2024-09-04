@@ -24,7 +24,7 @@ class PendulumEnv(GymPendulumEnv, gym.Env):
     into an upright position, with its center of gravity right above the fixed point.
 
     The diagram below specifies the coordinate system used for the implementation of the pendulum's
-    dynamic equations.
+    dynamic equations.Union[
 
     ![Pendulum Coordinate System](/_static/diagrams/pendulum.png)
 
@@ -125,7 +125,7 @@ class PendulumEnv(GymPendulumEnv, gym.Env):
         newthdot = thdot + (3 * g / (2 * l) * torch.sin(th) + 3.0 / (m * l**2) * u) * dt
         newthdot = torch.clip(newthdot, -self.max_speed, self.max_speed)
         newth = th + newthdot * dt
-        self.state = torch.stack([newth, newthdot])
+        self.state = torch.stack([newth, newthdot]).to(dtype=torch.float32)
 
         if self.render_mode == "human":
             self.render()
@@ -155,9 +155,14 @@ class PendulumEnv(GymPendulumEnv, gym.Env):
             self.render()
         return self._get_obs(), {}
 
+    def set_state(self, state):
+        cos, sin, thetadot = state
+        self.state = torch.tensor([torch.atan2(sin, cos), thetadot], dtype=torch.float32)
+        return self._get_obs(), {}
+
     def _get_obs(self):
         theta, thetadot = self.state
-        return torch.stack([torch.cos(theta), torch.sin(theta), thetadot])
+        return torch.stack([torch.cos(theta), torch.sin(theta), thetadot]).to(dtype=torch.float32)
 
 
 def angle_normalize(x):
