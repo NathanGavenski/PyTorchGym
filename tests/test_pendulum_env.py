@@ -26,6 +26,7 @@ class TestPendulumEnv(unittest.TestCase):
             gym_obs, torch_obs, rtol=1e-5, atol=1e-5,
             err_msg="The initial observations after reset do not match."
         )
+        self.assertTrue(isinstance(torch_obs, torch.Tensor))
 
     def test_step(self):
         """Test the step method of the environment."""
@@ -49,6 +50,9 @@ class TestPendulumEnv(unittest.TestCase):
         self.assertEqual(gym_terminated, torch_terminated, "Terminated flags do not match after step.")
         self.assertEqual(gym_done, torch_done, "Done flags do not match after step.")
         self.assertEqual(gym_info, torch_info, "Info dictionaries do not match after step.")
+
+        self.assertTrue(isinstance(torch_obs, torch.Tensor))
+        self.assertTrue(isinstance(torch_reward, torch.Tensor))
 
     def test_episode(self):
         """Test the environment over an entire episode."""

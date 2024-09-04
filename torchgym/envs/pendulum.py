@@ -129,7 +129,6 @@ class PendulumEnv(GymPendulumEnv, gym.Env):
 
         if self.render_mode == "human":
             self.render()
-        # truncation=False as the time limit is handled by the `TimeLimit` wrapper added during `make`
         return self._get_obs(), -costs, False, False, {}
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
@@ -159,6 +158,7 @@ class PendulumEnv(GymPendulumEnv, gym.Env):
     def _get_obs(self):
         theta, thetadot = self.state
         return torch.stack([torch.cos(theta), torch.sin(theta), thetadot])
+
 
 def angle_normalize(x):
     return ((x + torch.pi) % (2 * torch.pi)) - torch.pi
