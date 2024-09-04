@@ -22,7 +22,7 @@ import gymnasium as gym
 import torchgym
 
 
-env = gym.create("TorchPendulum-v1")
+env = gym.make("TorchPendulum-v1")
 obs, _ = env.reset(seed=0)
 action = env.action_space.sample()
 obs, reward, done, terminated, info = env.step(action)
