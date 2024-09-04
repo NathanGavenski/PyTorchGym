@@ -21,7 +21,6 @@ pip install git+https://github.com/NathanGavenski/PyTorchGym
 import gymnasium as gym
 import torchgym
 
-
 env = gym.make("TorchPendulum-v1")
 obs, _ = env.reset(seed=0)
 action = env.action_space.sample()
@@ -61,4 +60,3 @@ env.set_state(state) # Now the state will be the same as the one from the datase
 obs, reward, done, terminated, info = env.step(action)
 assert (obs == next_state).all()  # will pass since the transition will be the same
 ```
-
