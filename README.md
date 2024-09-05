@@ -60,4 +60,3 @@ env.set_state(state) # Now the state will be the same as the one from the datase
 obs, reward, done, terminated, info = env.step(action)
 assert (obs == next_state).all()  # will pass since the transition will be the same
 ```
-
