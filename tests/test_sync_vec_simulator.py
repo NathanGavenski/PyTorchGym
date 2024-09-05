@@ -117,17 +117,6 @@ class TestSyncVectorSimulator(unittest.TestCase):
         self.assertEqual(observations.shape[0], self.simulator.num_envs)
         self.assertEqual(len(infos["_info"]), self.simulator.num_envs)
 
-    def test_set_state_incorrect_state_size(self):
-        incorrect_states = torch.tensor([
-            [0.1, 0.2, 0.3],
-            [0.4, 0.5, 0.6],
-            [0.7, 0.8, 0.9],
-            [1.0, 1.1, 1.2]  # Extra state
-        ])
-
-        with self.assertRaises(AssertionError):
-            self.simulator.set_state(incorrect_states)
-
     def test_set_state_handles_info_merging(self):
         states = torch.tensor([
             [0.1, 0.2, 0.3],

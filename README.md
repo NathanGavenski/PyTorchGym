@@ -21,7 +21,6 @@ pip install git+https://github.com/NathanGavenski/PyTorchGym
 import gymnasium as gym
 import torchgym
 
-
 env = gym.make("TorchPendulum-v1")
 obs, _ = env.reset(seed=0)
 action = env.action_space.sample()

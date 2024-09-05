@@ -119,9 +119,6 @@ class SyncVectorSimulator(SyncVectorEnv):
         )
 
     def set_state(self, states: Tensor) -> tuple[Tensor[Any], dict[str, Any]]:
-        assert states.size(0) == len(self.envs), \
-            "states size don't match the number of environments"
-
         observations, infos = [], {}
         for i, (env, state) in enumerate(zip(self.envs, states)):
             (observation, info) = env.set_state(state)
