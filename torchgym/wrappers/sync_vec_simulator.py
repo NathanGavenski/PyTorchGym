@@ -62,6 +62,7 @@ class SyncVectorSimulator(SyncVectorEnv):
             seed = [seed + i for i in range(self.num_envs)]
         assert len(seed) == self.num_envs
 
+        self._rewards = torch.zeros((self.num_envs,), dtype=torch.float32)
         self._terminateds[:] = False
         self._truncateds[:] = False
 
@@ -113,8 +114,8 @@ class SyncVectorSimulator(SyncVectorEnv):
         return (
             deepcopy(self.observations) if self.copy else self.observations,
             self._rewards,
-            np.copy(self._terminateds),
-            np.copy(self._truncateds),
+            self._terminateds,
+            self._truncateds,
             infos,
         )
 
@@ -129,6 +130,7 @@ class SyncVectorSimulator(SyncVectorEnv):
         self.observations = concatenate(
             self.single_observation_space, observations, self.observations
         )
+        self._rewards = torch.zeros((self.num_envs,), dtype=torch.float32)
 
         return (
             deepcopy(self.observations) if self.copy else self.observations,
